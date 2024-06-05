@@ -13,6 +13,7 @@ def retrieve_metadata(dataset_uid):
     if response.status_code == 200:
         metadata = response.json()
         logger.info('Successfully retrieved metadata')
+        logger.debug(metadata)
         return metadata
     else:
         logger.error(f"Failed to retrieve metadata: {response.status_code}")
@@ -32,6 +33,7 @@ def retrieve_data_sample(dataset_uid):
     if response.status_code == 200:
         sample_data = response.json()
         logger.info('Successfully retrieved metadata')
+        logger.debug(sample_data)
         return sample_data
     else:
         logger.error(f"Failed to retrieve metadata: {response.status_code}")

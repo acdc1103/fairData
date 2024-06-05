@@ -2,6 +2,12 @@ document.getElementById('uidForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
     const datasetUID = document.getElementById('datasetUID').value;
+    const loadingDiv = document.getElementById('loading');
+    const resultsDiv = document.getElementById('results');
+
+    // Show loading spinner and hide results
+    loadingDiv.style.display = 'flex';
+    resultsDiv.style.display = 'none';
 
     fetch('/run_metrics', {
         method: 'POST',
@@ -16,6 +22,10 @@ document.getElementById('uidForm').addEventListener('submit', function (e) {
     })
     .catch(error => {
         console.error('Error:', error);
+    })
+    .finally(() => {
+        // Hide loading spinner
+        loadingDiv.style.display = 'none';
     });
 });
 
@@ -37,8 +47,6 @@ function displayResults(results) {
         grade.textContent = `Grade: ${result.grade}`;
         resultItem.appendChild(grade);
 
-        
-
         if (metric === 'financial_standards_applicable') {
             const possibleStandards = document.createElement('div');
             possibleStandards.className = 'possible-standards';
@@ -49,12 +57,18 @@ function displayResults(results) {
             adherence.className = 'adherence';
             adherence.textContent = `Adherence: ${result.adherence}`;
             resultItem.appendChild(adherence);
-        }
-        else{
+        }else if (metric === 'summary'){
+            continue;
+        } else {
             const message = document.createElement('div');
             message.className = 'message';
-            message.textContent = `Message: ${result.message}`;
+            message.textContent = `Reason: ${result.message}`;
+            
+            const source = document.createElement('div');
+            source.className = 'message';
+            source.textContent = `Evaluated based on: ${result.source_data}`;
             resultItem.appendChild(message);
+            resultItem.appendChild(source);
         }
 
         resultsDiv.appendChild(resultItem);

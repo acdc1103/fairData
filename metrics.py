@@ -1,4 +1,6 @@
 import datetime
+
+import requests
 from utils import interact_with_gpt
 from logger import logger
 
@@ -10,7 +12,7 @@ def access_points(metadata):
             
             logger.warning('No access points available')
     
-            return {'grade':'F', 'message':'No access points available', 'access_points': None}
+            return {'grade':'F', 'message':'No access points available', 'source_data': None}
     
     splitted_access_points = access_points.split(';')
     count_available_options = len(splitted_access_points)
@@ -19,19 +21,19 @@ def access_points(metadata):
 
         logger.info('Only one access point available')
 
-        return {'grade':'C', 'message':'Only one access point available', 'access_points': access_points}
+        return {'grade':'C', 'message':'Only one access point available', 'source_data': access_points}
     
     elif count_available_options > 1 and count_available_options <= 3:
 
         logger.info('Up to 3 access points available')
 
-        return {'grade':'B', 'message':'Up to 3 access points available', 'access_points': access_points}
+        return {'grade':'B', 'message':'Up to 3 access points available', 'source_data': access_points}
     
     elif count_available_options > 3:
         
         logger.info('More than 3 access points available')
 
-        return {'grade':'A', 'message':'More than 3 access points available', 'access_points': access_points}
+        return {'grade':'A', 'message':'More than 3 access points available', 'source_data': access_points}
 
 
 def uri_availbalility(metadata):
@@ -40,13 +42,13 @@ def uri_availbalility(metadata):
 
         logger.info('Data URI available')
 
-        return {'grade':'A', 'message':'Data URI available', 'data_uri': metadata['dataUri']}
+        return {'grade':'A', 'message':'Data URI available', 'source_data': metadata['dataUri']}
     
     else:
 
         logger.warning('No Data URI available')
 
-        return {'grade':'F', 'message':'No Data URI available', 'data_uri': None}
+        return {'grade':'F', 'message':'No Data URI available', 'source_data': None}
     
 
 def license_availability(metadata):
@@ -55,13 +57,13 @@ def license_availability(metadata):
 
         logger.info('License available')
 
-        return {'grade':'A', 'message':'License available', 'license': metadata['license']}
+        return {'grade':'A', 'message':'License available', 'source_data': metadata['license']}
     
     else:
 
         logger.warning('No License available')
 
-        return {'grade':'F', 'message':'No License available', 'license': None}
+        return {'grade':'F', 'message':'No License available', 'source_data': None}
 
 
 def metadata_updated_last_month(metadata):
@@ -90,43 +92,46 @@ def metadata_updated_last_month(metadata):
          
         logger.warning('No metadata updated information available')
 
-        return {'grade':'F', 'message':'No metadata updated information available', 'metadata_updated_at': None}
+        return {'grade':'F', 'message':'No metadata updated information available', 'source_data': None}
 
     if metadata_updated_at > one_month_ago:
 
         logger.info('Metadata updated in the past month')
 
-        return {'grade':'A', 'message':'Metadata updated in the past month', 'metadata_updated_at': metadata['metadataUpdatedAt']}
+        return {'grade':'A', 'message':'Metadata updated in the past month', 'source_data': metadata['metadataUpdatedAt']}
     
     elif metadata_updated_at > two_months_ago and metadata_updated_at <= one_month_ago:
 
         logger.info('Metadata updated last month')
 
-        return {'grade':'B', 'message':'Metadata updated last month', 'metadata_updated_at': metadata['metadataUpdatedAt']}
+        return {'grade':'B', 'message':'Metadata updated last month', 'source_data': metadata['metadataUpdatedAt']}
     
     elif metadata_updated_at > three_months_ago and metadata_updated_at <= two_months_ago:
 
         logger.info('Metadata updated two months ago')
 
-        return {'grade':'C', 'message':'Metadata updated two months ago', 'metadata_updated_at': metadata['metadataUpdatedAt']}
+        return {'grade':'C', 'message':'Metadata updated two months ago', 'source_data': metadata['metadataUpdatedAt']}
     
     elif metadata_updated_at > four_months_ago and metadata_updated_at <= three_months_ago:
 
         logger.info('Metadata updated three months ago')
 
-        return {'grade':'D', 'message':'Metadata updated three months ago', 'metadata_updated_at': metadata['metadataUpdatedAt']}
+        return {'grade':'D', 'message':'Metadata updated three months ago', 'source_data': metadata['metadataUpdatedAt']}
     
     else:
 
         logger.warning('Metadata updated at least four months ago')
 
-        return {'grade':'F', 'message':'Metadata updated at least four months ago', 'metadata_updated_at': metadata['metadataUpdatedAt']}
+        return {'grade':'F', 'message':'Metadata updated at least four months ago', 'source_data': metadata['metadataUpdatedAt']}
     
 
 def description_analyzer(metadata):
+    
+    description = metadata['description']
 
-    messages = [{"role": "system", "content": "You are a open data analyzer and analyze metadata of datasets based on the FAIR Data framework."},{"role": "user", "content": f"Do you think this description of the dataset is accurate enough and explains the dataset good. please give me a grade from A to F (A is the best and F the worst). Only output A, B, C, D or F for the grading with prefix GRADE: including the explaination with a prefix EXPLANATION: why you gave that certain grade  and don't do any text formatting. Here is the dataset description: {metadata['description']}"}]
+    messages = [{"role": "system", "content": "You are a open data analyzer and analyze metadata of datasets based on the FAIR Data framework."},{"role": "user", "content": f"Do you think this description of the dataset is accurate enough and explains the dataset good. please give me a grade from A to F (A is the best and F the worst). Only output A, B, C, D or F for the grading with prefix GRADE: including the explaination with a prefix EXPLANATION: why you gave that certain grade  and don't do any text formatting. Here is the dataset description: {description}"}]
     grading = interact_with_gpt(messages=messages)
+
     grade = grading\
         .split("GRADE: ")[1]\
         .split("EXPLANATION:")[0]\
@@ -137,7 +142,7 @@ def description_analyzer(metadata):
             .split("EXPLANATION: ")[1]\
             .strip()
     
-    return {'grade': grade, 'message': explanation}
+    return {'grade': grade, 'message': explanation, 'source_data': description}
 
 
 def category_availability(metadata):
@@ -146,13 +151,13 @@ def category_availability(metadata):
 
         logger.info('Category available')
 
-        return {'grade':'A', 'message':'Category available', 'category': metadata['category']}
+        return {'grade':'A', 'message':'Category available', 'source_data': metadata['category']}
     
     else:
 
         logger.warning('No Category available')
 
-        return {'grade':'F', 'message':'No Category available', 'category': None}
+        return {'grade':'F', 'message':'No Category available', 'source_data': None}
 
 
 def attribution_availability(metadata):
@@ -161,13 +166,13 @@ def attribution_availability(metadata):
 
         logger.info('Attribution available')
 
-        return {'grade':'A', 'message':'Attribution available', 'attribution': metadata['attribution']}
+        return {'grade':'A', 'message':'Attribution available', 'source_data': metadata['attribution']}
     
     else:
 
         logger.warning('No Attribution available')
 
-        return {'grade':'F', 'message':'No Attribution available', 'attribution': None}
+        return {'grade':'F', 'message':'No Attribution available', 'source_data': None}
 
 def financial_standards_applicable(metadata, data_sample):
 
@@ -179,10 +184,61 @@ def financial_standards_applicable(metadata, data_sample):
 
     result = result\
             .replace("OUTPUT","")\
-            .replace("PREFIX","")
+            .replace("PREFIX","")\
+            .replace("*","")
     
     possible_standards = result.split("STANDARDS:")[1].split("ADHERENCE:")[0].strip()
     adherence = result.split("ADHERENCE:")[1].split("GRADE:")[0].strip()
     grade = result.split("GRADE:")[1].strip()
 
     return {'grade': grade, 'possible_standards': possible_standards, 'adherence': adherence}
+
+def identifier_accessible(metadata):
+    
+    if metadata['dataUri']:
+
+        logger.info('Identifier available')
+        
+        response = requests.get(metadata['dataUri'])
+        
+        if response.status_code == 200:
+            
+            return {'grade':'A', 'message':'Identifier accessible', 'source_data': metadata['dataUri']}
+        
+        else:
+
+            return {'grade':'F', 'message':'Identifier not accessible', 'source_data': None}
+        
+    else:
+
+        logger.warning('No Identifier available')
+
+        return {'grade':'F', 'message':'No Identifier available', 'source_data': None}
+    
+def check_metadata(metadata):
+    
+    if not metadata:
+            
+        logger.warning('No metadata available')
+        
+        return {'grade':'F', 'message':'No metadata programatically available', 'source_data': None}
+    
+    else:
+        
+        logger.info('Metadata available')
+
+        return {'grade':'A', 'message':'Metadata programatically available', 'source_data': str(metadata)}
+    
+def check_audience(metadata):
+
+    if metadata['approvals'][0]['targetAudience']:
+        
+        logger.info('Audience available')
+
+        return {'grade':'A', 'message':'Audience available', 'source_data': metadata['approvals'][0]['targetAudience']}
+    
+    else:
+            
+        logger.warning('No Audience available')
+
+        return {'grade':'F', 'message':'No Audience available', 'source_data': None}
