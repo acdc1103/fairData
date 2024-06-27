@@ -1,82 +1,113 @@
-document.getElementById('uidForm').addEventListener('submit', function (e) {
+document.getElementById('assessment-form').addEventListener('submit', function (e) {
     e.preventDefault();
 
-    const datasetUID = document.getElementById('datasetUID').value;
+    const datasetURL = document.getElementById('datasetURL').value;
+    const datasetURL2 = document.getElementById('datasetURL2').value;
     const loadingDiv = document.getElementById('loading');
-    const resultsDiv = document.getElementById('results');
+    const wrapperResults = document.getElementById('wrapper-results');
+    const secondResult = document.getElementById('second-result');
 
-    // Show loading spinner and hide results
-    loadingDiv.style.display = 'flex';
-    resultsDiv.style.display = 'none';
-
+    loadingDiv.style.display = 'flex'; // Show loading spinner
     fetch('/run_metrics', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uid: datasetUID }),
+        body: JSON.stringify({ url: datasetURL }),
     })
     .then(response => response.json())
     .then(data => {
+
+        
+
         displayResults(data);
+        
     })
     .catch(error => {
         console.error('Error:', error);
     })
     .finally(() => {
-        // Hide loading spinner
-        loadingDiv.style.display = 'none';
+        loadingDiv.style.display = 'none'; // Hide loading spinner
     });
+
+    
+    if(datasetURL2){
+        loadingDiv.style.display = 'flex'; // Show loading spinner
+        fetch('/run_metrics', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ url: datasetURL2 }),
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            displayResultsSecond(data);
+
+            wrapperResults.style.display = 'flex';
+            secondResult.hidden = false;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            loadingDiv.style.display = 'none'; // Hide loading spinner
+        });
+    }
+    
 });
 
 function displayResults(results) {
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = '';
 
     for (const [metric, result] of Object.entries(results)) {
-        const resultItem = document.createElement('div');
-        resultItem.className = 'result-item';
-
-        const metricName = document.createElement('h3');
-        metricName.className = 'metric-name';
-        metricName.textContent = formatMetricName(metric);
-        resultItem.appendChild(metricName);
-
-        const grade = document.createElement('div');
-        grade.className = 'grade';
-        grade.textContent = `Grade: ${result.grade}`;
-        resultItem.appendChild(grade);
-
-        if (metric === 'financial_standards_applicable') {
-            const possibleStandards = document.createElement('div');
-            possibleStandards.className = 'possible-standards';
-            possibleStandards.textContent = `Possible Standards: ${result.possible_standards}`;
-            resultItem.appendChild(possibleStandards);
-
-            const adherence = document.createElement('div');
-            adherence.className = 'adherence';
-            adherence.textContent = `Adherence: ${result.adherence}`;
-            resultItem.appendChild(adherence);
-        }else if (metric === 'summary'){
+        if(metric === 'summary_grade'){
+            console.log(result)
+            document.getElementById('summary_grade').textContent = `Overall Score: ${result.text} (${result.number})`;
             continue;
-        } else {
-            const message = document.createElement('div');
-            message.className = 'message';
-            message.textContent = `Reason: ${result.message}`;
-            
-            const source = document.createElement('div');
-            source.className = 'message';
-            source.textContent = `Evaluated based on: ${result.source_data}`;
-            resultItem.appendChild(message);
-            resultItem.appendChild(source);
         }
-
-        resultsDiv.appendChild(resultItem);
+        if(metric === 'additional_info'){
+            console.log(result)
+            document.getElementById('provided_url').textContent = `${result.provided_url}`;
+            document.getElementById('metadata_preview').textContent = `Metadata: ${result.metadata}`;
+            document.getElementById('metadata_preview').hidden = false;
+            continue;
+        }
+        console.log(metric, result);
+        let grade_id = `grade_${result.subfix_element}`;
+        console.log(grade_id)
+        let message_id = `message_${result.subfix_element}`;
+        console.log(message_id)
+        document.getElementById(grade_id).textContent = `Score: ${result.grade}`;
+        document.getElementById(message_id).textContent = `Additional Info: ${result.message}`;
     }
 
-    resultsDiv.style.display = 'block';
+
 }
 
-function formatMetricName(metric) {
-    return metric.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+function displayResultsSecond(results) {
+
+    for (const [metric, result] of Object.entries(results)) {
+        if(metric === 'summary_grade'){
+            console.log(result)
+            document.getElementById('summary_grade_2').textContent = `Overall Score: ${result.text} (${result.number})`;
+            continue;
+        }
+        if(metric === 'additional_info'){
+            console.log(result)
+            document.getElementById('provided_url_2').textContent = `${result.provided_url}`;
+            document.getElementById('metadata_preview_2').textContent = `Metadata: ${result.metadata}`;
+            document.getElementById('metadata_preview_2').hidden = false;
+            continue;
+        }
+        console.log(metric, result);
+        let grade_id = `grade_2_${result.subfix_element}`;
+        console.log(grade_id)
+        let message_id = `message_2_${result.subfix_element}`;
+        console.log(message_id)
+        document.getElementById(grade_id).textContent = `Score: ${result.grade}`;
+        document.getElementById(message_id).textContent = `Additional Info: ${result.message}`;
+    }
+
+
 }

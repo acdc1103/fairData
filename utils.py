@@ -22,23 +22,24 @@ def calculate_summary_grade(results):
     for result in results.values():
         grade = result.get('grade')
         if grade:
-            total += grades[grade]
+            total += grades.get(grade,0)
             count += 1
 
     if count > 0:
         average = total / count
     else:
         average = 0
-
+    average = round(average, 2)
     if average >= 4.5:
-        return 'A'
+        return {'text':'A', 'number': average}
+    elif average >= 4:
+        return {'text':'B', 'number': average}
     elif average >= 3.5:
-        return 'B'
+        return {'text':'C', 'number': average}
+    elif average >= 3:
+        return {'text':'D', 'number': average}
     elif average >= 2.5:
-        return 'C'
-    elif average >= 1.5:
-        return 'D'
-    elif average >= 0.5:
-        return 'E'
+        return {'text':'E', 'number': average}
     else:
-        return 'F'
+        return {'text':'F', 'number': average}
+    
