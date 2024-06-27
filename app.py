@@ -84,15 +84,15 @@ def run_metrics():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
-
-@app.route('/home')
-def home():
-    return render_template('home.html')
-
-@app.route('/webflow')
-def webflow():
     return render_template('index_webflow.html')
+
+# @app.route('/home')
+# def home():
+#     return render_template('home.html')
+
+# @app.route('/webflow')
+# def webflow():
+#     return render_template('index_webflow.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
