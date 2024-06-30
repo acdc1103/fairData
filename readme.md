@@ -46,7 +46,7 @@ Before running the application, ensure you have the following installed:
 2. **Start the Server**
    - Run the application using:
      ```
-     python app.py runserver
+     python app.py
      ```
    - The application will be available at `http://127.0.0.1/`.
 
@@ -54,4 +54,3 @@ Before running the application, ensure you have the following installed:
 - Navigate to `http://127.0.0.1/` in your web browser.
 - Follow the on-screen instructions to submit your dataset for assessment.
 - Review the feedback provided by the tool and make necessary adjustments to improve your data's FAIRness.
- licensed under the MIT License - see the `LICENSE` file for details.
