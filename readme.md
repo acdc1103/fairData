@@ -54,3 +54,8 @@ Before running the application, ensure you have the following installed:
 - Navigate to `http://127.0.0.1/` in your web browser.
 - Follow the on-screen instructions to submit your dataset for assessment.
 - Review the feedback provided by the tool and make necessary adjustments to improve your data's FAIRness.
+
+## Additional Information
+- This project has been developed in the course of a university project. We tried to adhere to the pep8 coding style and developed unit-tests for easier future developments and quality assurance.
+- The website has been designed in Webflow.
+
