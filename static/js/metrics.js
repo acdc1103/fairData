@@ -1,13 +1,15 @@
 document.getElementById('assessment-form').addEventListener('submit', function (e) {
     e.preventDefault();
-
-    const datasetURL = document.getElementById('datasetURL').value;
-    const datasetURL2 = document.getElementById('datasetURL2').value;
-    const loadingDiv = document.getElementById('loading');
-    const wrapperResults = document.getElementById('wrapper-results');
-    const secondResult = document.getElementById('second-result');
+    
+    const datasetURL = document.getElementById('datasetURL').value; // Get the dataset URL from the input field
+    const datasetURL2 = document.getElementById('datasetURL2').value; // Get the second dataset URL from the input field
+    const loadingDiv = document.getElementById('loading'); // Get the loading spinner and results div
+    const wrapperResults = document.getElementById('wrapper-results'); // Get the wrapper results div
+    const secondResult = document.getElementById('second-result'); // Get the second result div
 
     loadingDiv.style.display = 'flex'; // Show loading spinner
+
+    // Sending the dataset URL to the backend to run the metrics
     fetch('/run_metrics', {
         method: 'POST',
         headers: {
@@ -17,11 +19,7 @@ document.getElementById('assessment-form').addEventListener('submit', function (
     })
     .then(response => response.json())
     .then(data => {
-
-        
-
         displayResults(data);
-        
     })
     .catch(error => {
         console.error('Error:', error);
@@ -31,8 +29,10 @@ document.getElementById('assessment-form').addEventListener('submit', function (
     });
 
     
-    if(datasetURL2){
+    if(datasetURL2){ // If the second dataset URL is provided, run the metrics for the second dataset to show the comparison
         loadingDiv.style.display = 'flex'; // Show loading spinner
+
+        // Sending the second dataset URL to the backend to run the metrics
         fetch('/run_metrics', {
             method: 'POST',
             headers: {
@@ -58,8 +58,9 @@ document.getElementById('assessment-form').addEventListener('submit', function (
     
 });
 
+// Function to display the results of the metrics
 function displayResults(results) {
-
+    // Loop through the results and display the grade and message for each metric
     for (const [metric, result] of Object.entries(results)) {
         if(metric === 'summary_grade'){
             console.log(result)
@@ -81,12 +82,11 @@ function displayResults(results) {
         document.getElementById(grade_id).textContent = `Score: ${result.grade}`;
         document.getElementById(message_id).textContent = `Additional Info: ${result.message}`;
     }
-
-
 }
 
+// Function to display the results of the metrics for the second dataset
 function displayResultsSecond(results) {
-
+    // Loop through the results and display the grade and message for each metric
     for (const [metric, result] of Object.entries(results)) {
         if(metric === 'summary_grade'){
             console.log(result)
@@ -108,6 +108,4 @@ function displayResultsSecond(results) {
         document.getElementById(grade_id).textContent = `Score: ${result.grade}`;
         document.getElementById(message_id).textContent = `Additional Info: ${result.message}`;
     }
-
-
 }
