@@ -1,0 +1,19 @@
+
+.loading {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: #355c7d;
+    z-index: 1000; /* Ensure it is above other content */
+}
+
+.collapsed {
+    display: none;
+}

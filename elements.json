@@ -1,0 +1,10 @@
+{
+    "catalog.data.gov": 
+    {
+        "metadata_url": "#dataset-metadata-source > ul > li > p > a",
+        "csv_url": "a[title='Comma Separated Values File']",
+        "metadata_created_at": "#sec-dates > table > tbody > tr:nth-child(1) > td",
+        "metadata_updated_at": "#sec-dates > table > tbody > tr:nth-child(2) > td"
+    }
+
+}
