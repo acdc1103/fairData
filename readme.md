@@ -68,3 +68,6 @@ Before running the application, ensure you have the following installed:
 - The website has been designed in Webflow.
 - The project consists of a app.py that is the Flask backend of the web application, metrics.py consisting of all metrics tested in the application, mapper.py mapping the different metadata schemas to a unified schema, api_handler.py currently on consisting of handling the finances.worldbank API to retrieve metadata and data sample, scraper.py a scraper that utilizes a json to maintain elements that have to be scraped (metadata url & data sample url), logger.py a python logger that is used throughout project, utils.py consists of functions that are reused and utilities for other functions and the unittests metrics_test.py for the metrics. The frontend is using javascript metrics.js and webflow.js (for design purposes).
 
+## Architecture
+![architecture_fairdata (2)](https://github.com/acdc1103/fairData/assets/73746974/bd116bb4-9efc-4de5-ae0e-24eff6f09cdd)
+
