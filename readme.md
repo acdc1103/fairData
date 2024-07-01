@@ -41,7 +41,15 @@ Before running the application, ensure you have the following installed:
 
 1. **Set Environment Variables**
    - You need an environment variable called 'OPENAI_API_KEY' containing an API key from OpenAI to use the GPT-4o API.
-     
+      - On Windows (Command Prompt):
+        ```
+        setx OPENAI_API_KEY "your_api_key_here"
+        ```
+     - On macOS and Linux (Terminal):
+        ```
+        export OPENAI_API_KEY="your_api_key_here"
+        ```
+   - Replace "your_api_key_here" with your OpenAI API key. (Create one here: https://openai.com/api/)
 
 2. **Start the Server**
    - Run the application using:
@@ -58,4 +66,5 @@ Before running the application, ensure you have the following installed:
 ## Additional Information
 - This project has been developed in the course of a university project. We tried to adhere to the pep8 coding style and developed unit-tests for easier future developments and quality assurance.
 - The website has been designed in Webflow.
+- The project consists of a app.py that is the Flask backend of the web application, metrics.py consisting of all metrics tested in the application, mapper.py mapping the different metadata schemas to a unified schema, api_handler.py currently on consisting of handling the finances.worldbank API to retrieve metadata and data sample, scraper.py a scraper that utilizes a json to maintain elements that have to be scraped (metadata url & data sample url), logger.py a python logger that is used throughout project, utils.py consists of functions that are reused and utilities for other functions and the unittests metrics_test.py for the metrics. The frontend is using javascript metrics.js and webflow.js (for design purposes).
 
